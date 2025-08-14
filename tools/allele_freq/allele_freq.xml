@@ -1,0 +1,41 @@
+<tool id="allele_freq" name="Allele Frequency Calculator" version="1.0.0">
+    <description>Compute per-SNP allele counts and MAF</description>
+
+    <requirements>
+        <requirement type="package" version="3.10">python</requirement>
+        <requirement type="package" version="2.3.1">pandas</requirement>
+        <requirement type="package" version="2.2.5">numpy</requirement>
+    </requirements>
+
+    <inputs>
+        <param name="genotypes" type="data" format="tabular" label="Genotype matrix"/>
+        <param name="snp_annotation" type="data" format="tabular" optional="true" label="SNP annotation"/>
+        <param name="sample_subset" type="data" format="tabular" optional="true" label="Sample subset file"/>
+        <param name="missing_code" type="text" value="NA" label="Missing value code"/>
+    </inputs>
+
+    <outputs>
+        <data name="out" format="tabular" label="Allele frequency table"/>
+    </outputs>
+
+    <command>
+        python '/home/dyaz/icogLabs/tr01/GWAS_Tools/tools/allele_freq/allele_freq.py'
+            --genotypes '${genotypes}' 
+            #if $snp_annotation:
+            --snp_annotation '${snp_annotation}' 
+            #end if
+            #if $sample_subset:
+            --sample_subset '${sample_subset}' 
+            #end if
+            --missing_code '${missing_code}' 
+            --out '${out}'
+    </command>
+
+    <help>
+        **Purpose:**  
+        Calculates counts of each genotype (0, 1, 2) and the minor allele frequency (MAF) for each SNP.
+
+        **Outputs:**  
+        - TSV with `snp_id`, `chrom`, `pos`, counts of each genotype, non-missing count, and MAF.
+    </help>
+</tool>
