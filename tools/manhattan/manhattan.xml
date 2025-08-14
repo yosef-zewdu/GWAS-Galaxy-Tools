@@ -1,0 +1,43 @@
+<tool id="manhattan_plot" name="Manhattan Plot Generator" version="1.0.0">
+    <description>Create a Manhattan plot and list top hits</description>
+
+    <requirements>
+        <requirement type="package" version="3.10">python</requirement>
+        <requirement type="package" version="2.3.1">pandas</requirement>
+        <requirement type="package" version="2.2.5">numpy</requirement>
+        <requirement type="package" version="3.10.5">matplotlib</requirement>
+    </requirements>
+
+    <inputs>
+        <param name="assoc" type="data" format="tabular" label="Association results"/>
+        <param name="snp_annotation" type="data" format="tabular" optional="true" label="SNP annotation"/>
+        <param name="p_threshold" type="float" value="5e-8" label="P-value threshold"/>
+        <param name="top_n" type="integer" value="20" label="Top N hits"/>
+    </inputs>
+
+    <outputs>
+        <data name="out_png" format="png" label="Manhattan plot PNG"/>
+        <data name="out_top" format="tabular" label="Top hits TSV"/>
+    </outputs>
+
+    <command>
+        python '/home/dyaz/icogLabs/tr01/GWAS_Tools/tools/manhattan/manhattan.py' 
+            --assoc '${assoc}' 
+            #if $snp_annotation:
+            --snp_annotation '${snp_annotation}' 
+            #end if
+            --p_threshold ${p_threshold} 
+            --top_n ${top_n} 
+            --out_png '${out_png}' 
+            --out_top '${out_top}'
+    </command>
+
+    <help>
+        **Purpose:**  
+        Generates a Manhattan plot from GWAS association results and outputs the top N hits.
+
+        **Outputs:**  
+        - PNG Manhattan plot with -log10(p) vs chromosome position.  
+        - TSV of top hits ranked by p-value.
+    </help>
+</tool>
