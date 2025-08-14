@@ -1,0 +1,32 @@
+Initial SNP count: 2000
+Initial sample count: 200
+SNP missingness threshold: 0.05
+Sample missingness threshold: 0.1
+MAF threshold: 0.2
+
+SNPs passing filters: 1338
+Samples passing filters: 200
+
+Top 10 SNPs removed by missingness (snp -> missing_frac):
+rs101999 -> 0.0000
+rs100000 -> 0.0000
+rs100001 -> 0.0000
+rs100002 -> 0.0000
+rs100003 -> 0.0000
+rs100004 -> 0.0000
+rs100005 -> 0.0000
+rs100006 -> 0.0000
+rs100007 -> 0.0000
+rs100008 -> 0.0000
+
+Top 10 SNPs removed by low MAF (snp -> maf):
+rs101525 -> 0.035
+rs101665 -> 0.0375
+rs101475 -> 0.04
+rs101843 -> 0.04
+rs101522 -> 0.04
+rs101749 -> 0.045
+rs101205 -> 0.045
+rs101292 -> 0.045
+rs100249 -> 0.045
+rs101859 -> 0.0475
