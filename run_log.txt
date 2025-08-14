@@ -1,0 +1,69 @@
+# GWAS Tool Run Log
+
+## config/tool_conf.xml.sample
+
+  <section id="gwas" name="GWAS Tools">
+    <tool file="/home/dyaz/icogLabs/tr01/GWAS_Tools/tools/snp_sample_qc/snp_sample_qc.xml" />
+    <tool file="/home/dyaz/icogLabs/tr01/GWAS_Tools/tools/allele_freq/allele_freq.xml" />
+    <tool file="/home/dyaz/icogLabs/tr01/GWAS_Tools/tools/association_test/association_test.xml" />
+    <tool file="/home/dyaz/icogLabs/tr01/GWAS_Tools/tools/manhattan/manhattan.xml" />
+    <tool file="/home/dyaz/icogLabs/tr01/GWAS_Tools/tools/window_ld/window_ld.xml" />
+  </section>
+
+## client/package.json
+    "webpack-production-maps": "NODE_OPTIONS='--max-old-space-size=6144' GXY_BUILD_SOURCEMAPS=0 NODE_ENV=production webpack",
+
+## client/webapck.config.js
+    if (process.env.GXY_BUILD_SOURCEMAPS  === "1") {
+        buildconfig.devtool = "eval-cheap-module-source-map";
+    }
+
+## SNP and Sample Quality Control (QC)
+
+python tools/snp_sample_qc/snp_sample_qc.py \
+  --genotypes gwas_data/genotypes.tsv \
+  --snp_annotation gwas_data/snp_annotation.tsv \
+  --phenotypes gwas_data/phenotypes_covariates.tsv \
+  --maf_thresh 0.2 \
+  --snp_miss_thresh 0.05 \
+  --out_genotypes outputs/snp_sample_qc/geno_filtered.tsv \
+  --out_snp_annotation outputs/snp_sample_qc/snp_annot_filtered.tsv \
+  --out_samples outputs/snp_sample_qc/samples_filtered.tsv \
+  --qc_report outputs/snp_sample_qc/qc_report.txt
+
+## Allele Frequency Calculation
+
+python tools/allele_freq/allele_freq.py \
+  --genotypes outputs/snp_sample_qc/geno_filtered.tsv \
+  --snp_annotation outputs/snp_sample_qc/snp_annot_filtered.tsv \
+  --out outputs/allele_freq/allele_freqs.tsv
+
+
+## GWAS Association Testing
+
+python tools/association_test/association_test.py \
+  --genotypes outputs/snp_sample_qc/geno_filtered.tsv \
+  --snp_annotation outputs/snp_sample_qc/snp_annot_filtered.tsv \
+  --phenotypes gwas_data/phenotypes_covariates.tsv \
+  --covariates age,sex \
+  --out outputs/association_test/assoc_results.tsv
+
+## Manhattan Plot Visualization
+
+python tools/manhattan/manhattan.py \
+  --assoc outputs/association_test/assoc_results.tsv \
+  --snp_annotation outputs/snp_sample_qc/snp_annot_filtered.tsv \
+  --p_threshold 1e-4 \
+  --out_png outputs/manhattan/manhattan.png \
+  --out_top outputs/manhattan/top_hits.tsv
+
+## Linkage Disequilibrium (LD) Calculation
+
+python tools/window_ld/window_ld.py \
+  --genotypes outputs/snp_sample_qc/geno_filtered.tsv \
+  --snp_annotation outputs/snp_sample_qc/snp_annot_filtered.tsv \
+  --focal_snp rs100696 \
+  --window_kb 250 \
+  --out_matrix outputs/window_ld/ld_matrix.tsv \
+  --out_png outputs/window_ld/ld_heatmap.png
+
