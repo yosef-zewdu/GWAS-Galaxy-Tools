@@ -1,0 +1,44 @@
+<tool id="association_test" name="Association Test (Logistic Regression)" version="1.0.0">
+    <description>Run per-SNP logistic regression against binary phenotype</description>
+
+    <requirements>
+        <requirement type="package" version="3.10">python</requirement>
+        <requirement type="package" version="2.3.1">pandas</requirement>
+        <requirement type="package" version="2.2.5">numpy</requirement>
+        <requirement type="package" version="0.14.5">statsmodels</requirement>
+    </requirements>
+
+    <inputs>
+        <param name="genotypes" type="data" format="tabular" label="Genotype matrix"/>
+        <param name="phenotypes_covariates" type="data" format="tabular" label="Phenotypes + covariates"/>
+        <param name="snp_annotation" type="data" format="tabular" optional="true" label="SNP annotation"/>
+        <param name="covariates" type="text" value="" label="Comma-separated covariates"/>
+        <param name="min_maf" type="float" value="0.01" label="Minimum MAF"/>
+        <param name="missing_code" type="text" value="NA" label="Missing value code"/>
+    </inputs>
+
+    <outputs>
+        <data name="out" format="tabular" label="Association results"/>
+    </outputs>
+
+    <command>
+        python '/home/dyaz/icogLabs/tr01/GWAS_Tools/tools/association_test/association_test.py' 
+            --genotypes '${genotypes}' 
+            --phenotypes_covariates '${phenotypes_covariates}' 
+            #if $snp_annotation:
+            --snp_annotation '${snp_annotation}' 
+            #end if
+            --covariates '${covariates}' 
+            --min_maf ${min_maf} 
+            --missing_code '${missing_code}' 
+            --out '${out}'
+    </command>
+
+    <help>
+        **Purpose:**  
+        Performs logistic regression for each SNP: phenotype ~ genotype + covariates.
+
+        **Outputs:**  
+        - TSV with SNP ID, chrom, pos, beta, SE, z-score, p-value, MAF, and sample count.
+    </help>
+</tool>
