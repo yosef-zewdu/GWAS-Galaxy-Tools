@@ -1,0 +1,60 @@
+<tool id="snp_sample_qc" name="SNP and  Sample QC" version="1.0.0" profile="25.0">
+    <description>Filter genotype data by MAF and missingness thresholds</description>
+
+    <requirements>
+        <requirement type="package" version="3.10">python</requirement>
+        <requirement type="package" version="2.3.1">pandas</requirement>
+        <requirement type="package" version="2.2.5">numpy</requirement>
+    </requirements>
+
+    <inputs>
+        <param name="genotypes" type="data" format="tabular" label="Genotype matrix (samples x SNPs)"/>
+        <param name="snp_annotation" type="data" format="tabular" label="SNP annotation"/>
+        <param name="phenotypes" type="data" format="tabular" optional="true" label="Phenotypes + covariates"/>
+        <param name="maf_thresh" type="float" value="0.01" label="MAF threshold"/>
+        <param name="snp_miss_thresh" type="float" value="0.05" label="SNP missingness threshold"/>
+        <param name="sample_miss_thresh" type="float" value="0.1" label="Sample missingness threshold"/>
+        <param name="missing_code" type="text" value="NA" label="Missing value code"/>
+    </inputs>
+
+    <outputs>
+        <data name="filtered_genotypes" format="tabular" label="Filtered genotypes"/>
+        <data name="filtered_snp_annotation" format="tabular" label="Filtered SNP annotation"/>
+        <data name="filtered_samples" format="tabular" label="Filtered sample list / phenotypes"/>
+        <data name="qc_report" format="txt" label="QC report"/>
+    </outputs>
+
+    <command>
+        python '/home/dyaz/icogLabs/tr01/GWAS_Tools/tools/snp_sample_qc/snp_sample_qc.py'
+            --genotypes '${genotypes}'
+            --snp_annotation '${snp_annotation}'
+            #if $phenotypes:
+            --phenotypes '${phenotypes}'
+            #end if
+            --maf_thresh ${maf_thresh}
+            --snp_miss_thresh ${snp_miss_thresh}
+            --sample_miss_thresh ${sample_miss_thresh}
+            --missing_code '${missing_code}'
+            --out_genotypes '${filtered_genotypes}'
+            --out_snp_annotation '${filtered_snp_annotation}'
+            --out_samples '${filtered_samples}'
+            --qc_report '${qc_report}'
+    </command>
+
+    <help>
+        **Purpose:**  
+        Perform quality control on GWAS genotype data. Filters SNPs and samples based on missingness and MAF thresholds.
+
+        **Inputs:**  
+        - Genotype matrix (tabular) with sample IDs as rows and SNP IDs as columns.  
+        - SNP annotation (tabular) with `snp_id`, `chrom`, `pos`, `maf`.  
+        - Optional phenotype + covariates file.  
+        - Filtering thresholds for MAF, SNP missingness, and sample missingness.  
+
+        **Outputs:**  
+        - Filtered genotype matrix.  
+        - Filtered SNP annotation.  
+        - Filtered sample list or phenotype table.  
+        - QC report (summary statistics before/after filtering).  
+    </help>
+</tool>
